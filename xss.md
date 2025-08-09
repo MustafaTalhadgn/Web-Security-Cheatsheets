@@ -1,16 +1,16 @@
 # XSS (Cross-Site Scripting) Rehberi (2025)
 
 ## 📑 İçerik
-- [Giriş](#giris)
-- [XSS Türleri](#xss-turleri)
-- [Temel Payload'lar](#temel-payloadlar)
-- [Eski / Çalışma İhtimali Düşük Payload'lar](#eski--calisma-ihtimali-dusuk-payloadlar)
-- [WAF Bypass Payload'ları](#waf-bypass-payloadlari)
-- [Tespit Yöntemleri](#tespit-yontemleri)
-- [XSS ile Olası Saldırı Senaryoları](#xss)
-- [Önleme Yöntemleri](#onleme-yontemleri)
-- [Test Ortamları](#test-ortamlari)
-- [Kaynaklar](#kaynaklar)
+- [Giriş](#-giriş)
+- [XSS Türleri](#-xss-türleri)
+- [Temel Payload'lar](#-temel-payloadlar)
+- [Eski / Çalışma İhtimali Düşük Payload'lar](#-eski--çalışma-ihtimali-düşük-payloadlar)
+- [WAF Bypass Payload'ları](#-waf-bypass-payloadları)
+- [Tespit Yöntemleri](#-tespit-yöntemleri)
+- [XSS ile Olası Saldırı Senaryoları](#-xss-ile-olası-saldırı-senaryoları)
+- [Önleme Yöntemleri](#-önleme-yöntemleri)
+- [Test Ortamları](#-test-ortamları)
+- [Kaynaklar](#-kaynaklar)
 
 ---
 
