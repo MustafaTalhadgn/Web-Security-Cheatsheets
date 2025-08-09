@@ -7,7 +7,7 @@
 - [Eski / Çalışma İhtimali Düşük Payload'lar](#eski--calisma-ihtimali-dusuk-payloadlar)
 - [WAF Bypass Payload'ları](#waf-bypass-payloadlari)
 - [Tespit Yöntemleri](#tespit-yontemleri)
-- [XSS ile Olası Saldırı Senaryoları](#XSS ile Olası Saldırı Senaryoları)
+- [XSS ile Olası Saldırı Senaryoları](#xss)
 - [Önleme Yöntemleri](#onleme-yontemleri)
 - [Test Ortamları](#test-ortamlari)
 - [Kaynaklar](#kaynaklar)
