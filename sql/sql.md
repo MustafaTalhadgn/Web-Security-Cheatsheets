@@ -337,3 +337,17 @@ CONCAT(CHAR(97,100,109,105,110),CHAR(58),password)
 - **Blind SQLi veya Out-of-Band** ile WAF’ı tamamen bypass etmek mümkün olabilir.
 
 
+## 📚 Kaynaklar
+
+### Resmi Belgeler
+- [OWASP XSS](https://owasp.org/www-community/attacks/xss/)
+- [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Glossary/Cross-site_scripting)
+
+### Payload Listeleri
+- [PayloadsAllTheThings - XSS](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/XSS%20Injection)
+- [SecLists - XSS](https://github.com/danielmiessler/SecLists/tree/master/Fuzzing/XSS)
+- [PayloadBox - XSS Payload List](https://github.com/payloadbox/xss-payload-list)
+- [AwesomeXSS](https://github.com/s0md3v/AwesomeXSS)
+
+### Araştırma Yazıları
+- [pgaijin66/XSS-Payloads](https://github.com/pgaijin66/XSS-Payloads)
