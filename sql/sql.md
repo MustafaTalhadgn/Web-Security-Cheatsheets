@@ -73,7 +73,7 @@ SQL Injection, uygulamanın verdiği geri bildirim veya veri tabanı ile olan et
   ```
   ' OR IF(1=1, SLEEP(5), 0)--
 
-  ' and (substring(database(),1,1) = "a")
+  ' and (substring(database(),1,1) = "a") #
   ```
 - **Avantaj:** Hata mesajı olmadan veri çekilebilir.
 - **Dezavantaj:** Veri toplama yavaş.
