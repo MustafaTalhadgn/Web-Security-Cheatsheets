@@ -72,6 +72,8 @@ SQL Injection, uygulamanın verdiği geri bildirim veya veri tabanı ile olan et
 - **Time-based Blind:** Sorgu sonucuna göre sunucu gecikme yapar.
   ```
   ' OR IF(1=1, SLEEP(5), 0)--
+
+  ' and (substring(database(),1,1) = "a")
   ```
 - **Avantaj:** Hata mesajı olmadan veri çekilebilir.
 - **Dezavantaj:** Veri toplama yavaş.
