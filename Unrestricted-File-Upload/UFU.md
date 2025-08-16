@@ -16,20 +16,7 @@
 
 ---
 
-## 🎯 Giriş
-Unrestricted File Upload (Sınırsız Dosya Yükleme), web uygulamalarında **kullanıcının yüklediği dosyaların doğru şekilde doğrulanmaması** sonucu oluşan kritik bir güvenlik açığıdır.  
 
-Bu açık sayesinde saldırganlar, sisteme zararlı dosyalar yükleyebilir ve şu riskler ortaya çıkabilir:
-- **Web Shell** yükleyerek uzaktan komut çalıştırma (RCE)  
-- **XSS veya HTML injection** barındıran dosyalarla saldırı  
-- **Malware / Trojan** yükleyerek kullanıcıları enfekte etme  
-- **Dosya taşıma / overwrite** ile sistemdeki mevcut dosyaları bozma  
-
-Özellikle dosya yükleme fonksiyonlarının sıkça kullanıldığı alanlarda (profil resmi yükleme, belge yükleme, CV yükleme vb.) bu açık çok kritik hale gelir.  
-
-📌 OWASP’ın en tehlikeli açıklar listesinde **yüksek riskli** kategoridedir çünkü genellikle **uzaktan sistem ele geçirme** (Remote Code Execution - RCE) ile sonuçlanır.  
-
----
 
 ## 🧩 Dosya Yükleme Açıklarının Temel Mantığı
 Dosya yükleme açıklarının temel mantığı, **kullanıcının yüklediği dosyanın yeterince kontrol edilmeden sunucuya kaydedilmesi** durumudur.  
