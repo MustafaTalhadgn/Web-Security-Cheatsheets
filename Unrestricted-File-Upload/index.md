@@ -2,4 +2,4 @@
 ---
 [Giriş](/Unrestricted-File-Upload/giris.md)
 ---
-[Giriş](/Unrestricted-File-Upload/dosya-yukleme-Aciklarinin-Temel-Mantigi.md)
+[Dosya Yükleme Açıklarının Temel Mantığı](/Unrestricted-File-Upload/dosya-yukleme-Aciklarinin-Temel-Mantigi.md)
