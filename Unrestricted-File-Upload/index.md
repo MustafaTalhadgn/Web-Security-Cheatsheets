@@ -12,7 +12,7 @@
 --
 6-[Tespit Yöntemleri](/Unrestricted-File-Upload/6-tespit-yöntemleri.md)
 --
-7-[Unrestricted File Upload ile Olası Saldırılar](/Unrestricted-File-Upload/ 7-unrestricted-file-upload-ile-olası-saldırılar.md)
+7-[Unrestricted File Upload ile Olası Saldırılar](/Unrestricted-File-Upload/7-unrestricted-file-upload-ile-olası-saldırılar.md)
 --
 8-[WAF / Filtre Bypass Teknikleri](/Unrestricted-File-Upload/8-waf--filtre-bypass-teknikleri.md)
 --
