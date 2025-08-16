@@ -1,6 +1,6 @@
 # 📂 File Inclusion Rehberi (2025)
 ---
-[ 1-Giriş ve Temel Kavramlar ](/File-Inclusion/1-giris..md)
+[ 1-Giriş ve Temel Kavramlar ](/File-Inclusion/1-giris.md)
 Açıklama: Local File Inclusion (LFI) ve Remote File Inclusion (RFI) kavramlarının tanıtımı, riskleri ve web uygulamalarındaki yaygın kullanım alanları.
 
 ---
