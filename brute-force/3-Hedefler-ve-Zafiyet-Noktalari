@@ -1,0 +1,80 @@
+## [3-Hedefler ve Zafiyet Noktaları](/Brute-Force/3-hedefler-ve-zafiyet-noktalari.md)  
+
+### 📌 Açıklama  
+Brute-Force saldırılarının başarılı olabilmesi için hedef sistemde belirli açıkların veya zafiyet noktalarının bulunması gerekir.  
+Her sistem aynı derecede savunmasız değildir, bu yüzden saldırganlar genellikle daha kolay hedeflere yönelir.  
+
+---
+
+### 🎯 Olası Hedefler  
+1. **Web Uygulamaları**  
+   - Giriş (login) formları  
+   - Parola sıfırlama sayfaları  
+   - Yönetici panelleri  
+
+2. **Ağ Servisleri**  
+   - SSH, FTP, Telnet  
+   - RDP (Remote Desktop Protocol)  
+   - SMTP, POP3, IMAP gibi e-posta servisleri  
+
+3. **Veritabanları**  
+   - MySQL, PostgreSQL, Oracle, MSSQL oturum açma ekranları  
+
+4. **Kablosuz Ağlar**  
+   - WPA/WPA2 parola denemeleri  
+   - WPS PIN brute-force saldırıları  
+
+---
+
+### 🛠 Zafiyet Noktaları  
+
+#### 1. **Zayıf Parola Politikaları**  
+- "123456", "admin", "password" gibi kolay tahmin edilebilir şifreler.  
+
+#### 2. **Kilitlenme (Account Lockout) Eksikliği**  
+- Belirli sayıda yanlış girişten sonra hesap kilitlenmiyorsa brute-force çok daha kolay hale gelir.  
+
+#### 3. **Giriş Denemesi Limitinin Olmaması**  
+- Tek IP’den sınırsız sayıda istek yapılabiliyorsa saldırı hızlanır.  
+
+#### 4. **Yanıt Süreleri**  
+- Başarılı ve başarısız girişlerde farklı sürelerde cevap dönülmesi, saldırgana doğru parolayı bulduğuna dair ipucu verir (Timing Attack).  
+
+#### 5. **Sızdırılmış Bilgiler**  
+- Daha önce veri sızıntılarında elde edilmiş kullanıcı adı-parola kombinasyonlarının yeniden kullanılabilmesi.  
+
+---
+
+### 🔎 Örnek Senaryo  
+
+**Web Login Formu:**  
+POST /login HTTP/1.1  
+Host: hedefsite.com  
+Content-Type: application/x-www-form-urlencoded  
+username=admin&password=deneme  
+
+- Eğer `username=admin` doğruysa ve parola yanlış olduğunda hata mesajı farklıysa, bu durum saldırgana kullanıcı adının geçerli olduğunu gösterir.  
+- Bu tür "farklı hata mesajları" da bir zafiyet noktasıdır.  
+
+---
+
+### 🛠 Kullanım  
+
+Hydra ile FTP brute-force denemesi:  
+hydra -l admin -P rockyou.txt ftp://192.168.1.100  
+
+Burp Suite Intruder ile parametre brute-force:  
+Target: POST /login  
+Payload: password  
+Wordlist: rockyou.txt  
+
+---
+
+### ✅ Sonuç  
+- Brute-Force saldırılarında asıl başarı, doğru hedef ve zafiyet noktasını bulmaya dayanır.  
+- Zayıf parola politikaları, limit eksiklikleri ve yanlış yapılandırılmış sistemler en sık görülen açıklar arasındadır.  
+- Sistem yöneticilerinin alacağı önlemler (MFA, lockout, rate limiting) saldırının etkinliğini ciddi şekilde düşürür.  
+
+📖 **Özet Not:**  
+- Hedefler: Web login formları, ağ servisleri, veritabanları, kablosuz ağlar.  
+- Zafiyet Noktaları: Zayıf parolalar, limit/kilitlenme olmaması, zamanlama farkları, sızdırılmış bilgiler.  
