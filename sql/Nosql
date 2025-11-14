@@ -1,0 +1,1 @@
+{"email":{"$ne": "a"},"password":{"$ne": "b"}}
