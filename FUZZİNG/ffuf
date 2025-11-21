@@ -1,0 +1,1 @@
+ ffuf -u http://example.com/FUZZ -w /usr/share/wordlists/dirb/common.txt -e .php,.bak,.old,.txt,.sql -fs (size)
