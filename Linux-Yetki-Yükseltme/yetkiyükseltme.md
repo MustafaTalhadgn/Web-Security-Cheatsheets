@@ -63,9 +63,26 @@ SUID (Set User ID) bitine sahip dosyalar, dosya sahibinin (genellikle root) yetk
 
 ### Örnek SUID Çıktısı
 ```text
--rwsr-xr-x 1 root root 35040 Jan 20 2022 /usr/bin/umount
--rwsr-xr-x 1 root root 71912 Jan 20 2022 /usr/bin/su
--rwsr-xr-x 1 root root 158448 Nov 2 2022 /usr/bin/ntfs-3g
+-rwsr-sr-x 1 root root 14608 Feb  1  2023 /usr/lib/xorg/Xorg.wrap
+-rwsr-xr-- 1 root messagebus 51336 Oct  5  2022 /usr/lib/dbus-1.0/dbus-daemon-launch-helper
+-rwsr-xr-x 1 root root 555584 Dec 21 10:07 /usr/lib/openssh/ssh-keysign
+-rwsr-xr-x 1 root root 52808 May 25  2023 /usr/lib/mongodb-compass/chrome-sandbox
+-rwsr-xr-x 1 root root 146480 Dec  3 07:58 /usr/sbin/mount.nfs
+-rwsr-xr-x 1 root root 48128 Aug 26  2022 /usr/sbin/mount.cifs
+-rwsr-xr-x 1 root root 1360680 Jul 13  2021 /usr/sbin/exim4
+-rwsr-xr-x 1 root root 35040 Jan 20  2022 /usr/bin/umount
+-rwsr-xr-x 1 root root 71912 Jan 20  2022 /usr/bin/su
+-rwsr-xr-x 1 root root 182600 Jan 14  2023 /usr/bin/sudo
+-rwsr-xr-x 1 root root 44632 Feb  7  2020 /usr/bin/newgrp
+-rwsr-xr-x 1 root root 63960 Feb  7  2020 /usr/bin/passwd
+-rwsr-xr-x 1 root root 35048 Jun 20  2021 /usr/bin/fusermount3
+-rwsr-xr-x 1 root root 58416 Feb  7  2020 /usr/bin/chfn
+-rwsr-xr-x 1 root root 158448 Nov  2  2022 /usr/bin/ntfs-3g
+-rwsr-xr-x 1 root root 23448 Jan 13  2022 /usr/bin/pkexec
+-rwsr-xr-x 1 root root 52880 Feb  7  2020 /usr/bin/chsh
+-rwsr-xr-x 1 root root 88304 Feb  7  2020 /usr/bin/gpasswd
+-rwsr-xr-x 1 root root 55528 Jan 20  2022 /usr/bin/mount
+-rwsr-xr-x 1 root root 19040 Jan 13  2022 /usr/libexec/polkit-agent-helper-1
 ```
 > 💡 **İpucu:** Bulunan binary dosyaları [GTFOBins](https://gtfobins.github.io/) üzerinde aratarak nasıl exploit edileceğini (SUID bölümü) öğrenebilirsin.
 
