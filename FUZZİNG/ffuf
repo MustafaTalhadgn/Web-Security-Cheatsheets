@@ -1,4 +1,4 @@
- ffuf -u http://example.com/FUZZ -w /usr/share/wordlists/dirb/common.txt -e .php,.bak,.old,.txt,.sql -fs (size)
+ffuf -u http://example.com/FUZZ -w /usr/share/wordlists/dirb/common.txt -e .php,.bak,.old,.txt,.sql -fs (size)
 ffuf -u http://lorecoffee.hv/FUZZ -w /usr/share/wordlists/dirb/common.txt -mc 200,301,302,303,401,403,500
 not : tüm yönlendirmeleri kabul et :   -mc 200,3xx,401,403,500
 
